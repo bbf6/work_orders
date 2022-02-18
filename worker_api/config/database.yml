@@ -1,0 +1,21 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: vagrant
+  password: 123
+  socket: /var/run/mysqld/mysqld.sock
+
+development:
+  <<: *default
+  database: worker_api_development
+
+test:
+  <<: *default
+  database: worker_api_test
+
+production:
+  <<: *default
+  database: <%= ENV["WORKER_API_DATABASE_NAME"] %>
+  username: <%= ENV["WORKER_API_DATABASE_USER"] %>
+  password: <%= ENV["WORKER_API_DATABASE_PASSWORD"] %>

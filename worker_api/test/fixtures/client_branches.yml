@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  client: one
+  client_manager: one
+  address: MyString
+  email: MyString
+  status: false
+
+two:
+  client: two
+  client_manager: two
+  address: MyString
+  email: MyString
+  status: false

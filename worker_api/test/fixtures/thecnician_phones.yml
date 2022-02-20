@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  thecnician: one
+  description: MyString
+  number: MyString
+  status: false
+
+two:
+  thecnician: two
+  description: MyString
+  number: MyString
+  status: false

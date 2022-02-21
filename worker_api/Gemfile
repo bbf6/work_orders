@@ -7,6 +7,8 @@ gem "rails", "~> 7.0.2", ">= 7.0.2.2"
 gem "mysql2", "~> 0.5"
 gem "puma", "~> 5.0"
 gem 'seed_dump'
+gem 'rswag'
+gem 'rack-cors'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
@@ -19,6 +21,8 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem 'rspec-rails'
+  gem 'rswag-specs'
 end
 
 group :development do

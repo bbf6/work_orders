@@ -1,0 +1,100 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/clients":
+    get:
+      summary: Get a list of all clients
+      tags:
+      - clients
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+    post:
+      summary: Creates a client
+      tags:
+      - clients
+      parameters: []
+      responses:
+        '201':
+          description: client created
+        '400':
+          description: invalid data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/clients/{id}":
+    get:
+      summary: find specific client
+      tags:
+      - clients
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Client found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                required:
+                - id
+                - name
+    put:
+      summary: updates client data
+      tags:
+      - clients
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: client updated
+        '400':
+          description: invalid data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
+- url: http://devartiral.com:3000

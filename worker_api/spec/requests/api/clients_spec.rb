@@ -53,7 +53,7 @@ RSpec.describe 'api/clients', type: :request do
           id: { type: :integer },
           name: { type: :string }
         },
-        required: [ 'id', 'name' ]
+        required: [ 'id' ]
 
         let(:id) { Client.create(name: 'Cemsi Policlínica').id }
         run_test!

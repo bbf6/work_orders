@@ -4,12 +4,10 @@ Rails.application.routes.draw do
   scope 'api' do
     resources :client_branches
     resources :clients
-    resources :client_manager_phones
-    resources :client_managers
     resources :retainers
     resources :tickets
     resources :work_orders
-    resources :thecnician_phones
+    get '/work_orders/by_thecnician/:thecnician_id' => 'work_orders#by_thecnician'
     resources :thecnicians
   end
 end

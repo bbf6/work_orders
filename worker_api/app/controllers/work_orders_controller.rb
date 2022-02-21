@@ -1,10 +1,16 @@
 class WorkOrdersController < ApplicationController
   before_action :set_work_order, only: %i[ show update destroy ]
+  before_action :thecnician_params, only: [:by_thecnician]
 
   # GET /work_orders
   def index
     @work_orders = WorkOrder.all
 
+    render json: @work_orders
+  end
+
+  def by_thecnician
+    @work_orders = WorkOrder.by_thecnician params[:thecnician_id]
     render json: @work_orders
   end
 
@@ -47,5 +53,9 @@ class WorkOrdersController < ApplicationController
     # Only allow a list of trusted parameters through.
     def work_order_params
       params.require(:work_order).permit(:thecnician_id, :begining_attention_date, :ending_attention_date, :work_status_type_id)
+    end
+
+    def thecnician_params
+      params.permit(:thecnician_id)
     end
 end

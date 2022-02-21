@@ -1,8 +1,5 @@
 class Client < ApplicationRecord
   has_many :client_branches
 
-  def managers
-    self.client_branches.map { |b| b.client_manager }
-  end
-
+  accepts_nested_attributes_for :client_branches
 end

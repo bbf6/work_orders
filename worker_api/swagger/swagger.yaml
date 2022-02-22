@@ -294,17 +294,114 @@ paths:
           content:
             application/json:
               schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    begining_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date when the technician starts the work.
+                    ending_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date of ending work.
+                    status:
+                      type: integer
+                      minimum: 1
+                      maximum: 5
+                      description: 'The current status of the work pending: 1, doing:
+                        2, paused: 3, done: 4, canceled: 5'
+                    thecnician_id:
+                      type: integer
+                    ticket:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        accident_date:
+                          type: string
+                          format: date-time
+                        client_branch_id:
+                          type: integer
+                        details:
+                          type: string
+                        work_order_id:
+                          type: integer
+                        client_branch:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            address:
+                              type: string
+                            email:
+                              type: string
+                            client:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                    retainer:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        service_date:
+                          type: string
+                          format: date-time
+                        client_branch_id:
+                          type: integer
+                        work_order_id:
+                          type: integer
+                        client_branch:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            address:
+                              type: string
+                            email:
+                              type: string
+                            client:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+  "/api/work_orders/mark_as_done/{id}":
+    put:
+      summary: Mark a work as done
+      tags:
+      - work_orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
                   id:
                     type: integer
                   begining_attention_date:
                     type: string
-                    format: date_time
+                    format: date-time
                     description: Date when the technician starts the work.
                   ending_attention_date:
                     type: string
-                    format: date_time
+                    format: date-time
                     description: Date of ending work.
                   status:
                     type: integer
@@ -320,8 +417,8 @@ paths:
                       id:
                         type: integer
                       accident_date:
-                        type: date
-                        format: datetime
+                        type: string
+                        format: date-time
                       client_branch_id:
                         type: integer
                       details:
@@ -350,8 +447,8 @@ paths:
                       id:
                         type: integer
                       service_date:
-                        type: date
-                        format: datetime
+                        type: string
+                        format: date-time
                       client_branch_id:
                         type: integer
                       work_order_id:
@@ -372,6 +469,188 @@ paths:
                                 type: integer
                               name:
                                 type: string
+  "/api/work_orders/list_pending":
+    get:
+      summary: List all pending works
+      tags:
+      - work_orders
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    begining_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date when the technician starts the work.
+                    ending_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date of ending work.
+                    status:
+                      type: integer
+                      minimum: 1
+                      maximum: 5
+                      description: 'The current status of the work pending: 1, doing:
+                        2, paused: 3, done: 4, canceled: 5'
+                    thecnician_id:
+                      type: integer
+                    ticket:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        accident_date:
+                          type: string
+                          format: date-time
+                        client_branch_id:
+                          type: integer
+                        details:
+                          type: string
+                        work_order_id:
+                          type: integer
+                        client_branch:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            address:
+                              type: string
+                            email:
+                              type: string
+                            client:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                    retainer:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        service_date:
+                          type: string
+                          format: date-time
+                        client_branch_id:
+                          type: integer
+                        work_order_id:
+                          type: integer
+                        client_branch:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            address:
+                              type: string
+                            email:
+                              type: string
+                            client:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+  "/api/work_orders/list_done":
+    get:
+      summary: List all done works
+      tags:
+      - work_orders
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    begining_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date when the technician starts the work.
+                    ending_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date of ending work.
+                    status:
+                      type: integer
+                      minimum: 1
+                      maximum: 5
+                      description: 'The current status of the work pending: 1, doing:
+                        2, paused: 3, done: 4, canceled: 5'
+                    thecnician_id:
+                      type: integer
+                    ticket:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        accident_date:
+                          type: string
+                          format: date-time
+                        client_branch_id:
+                          type: integer
+                        details:
+                          type: string
+                        work_order_id:
+                          type: integer
+                        client_branch:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            address:
+                              type: string
+                            email:
+                              type: string
+                            client:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                    retainer:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        service_date:
+                          type: string
+                          format: date-time
+                        client_branch_id:
+                          type: integer
+                        work_order_id:
+                          type: integer
+                        client_branch:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            address:
+                              type: string
+                            email:
+                              type: string
+                            client:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
   "/api/work_orders":
     get:
       summary: Get a list of all work_orders
@@ -389,11 +668,11 @@ paths:
                     type: integer
                   begining_attention_date:
                     type: string
-                    format: date_time
+                    format: date-time
                     description: Date when the technician starts the work.
                   ending_attention_date:
                     type: string
-                    format: date_time
+                    format: date-time
                     description: Date of ending work.
                   status:
                     type: integer

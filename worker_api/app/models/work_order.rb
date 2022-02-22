@@ -3,18 +3,16 @@ class WorkOrder < ApplicationRecord
   has_one :retainer
   has_one :ticket
 
-  has_one :retainer_format, ->{ joins(client_branch: :client).joins(client_branch: :client_manager).pluck(:service_date, 'clients.name', :address) }, foreign_key: :work_order_id, class_name: 'Retainer'
-  has_one :ticket_format, ->{ joins(client_branch: :client).joins(client_branch: :client_manager).pluck(:accident_date, :details, 'clients.name', :address) }, foreign_key: :work_order_id, class_name: 'Ticket'
-
-  default_scope -> { where(status: true) }
-  scope :by_thecnician, ->(id) do
-    select(:id, :status, :begining_attention_date, :ending_attention_date, :thecnician_id)
-    .includes(:ticket_format, :retainer_format)
-    .where(thecnician_id: id)
-    .working_plan_order
-  end
-
+  scope :by_thecnician, ->(id) { relations.where(thecnician_id: id).working_plan_order }
   scope :working_plan_order, -> { order('tickets.accident_date desc, retainers.service_date desc') }
+  scope :pending_works, -> { relations.where(status: 'pending').working_plan_order }
+  scope :done_works, -> { relations.where(status: 'done').working_plan_order }
+
+  scope :relations, -> do
+    select(:id, :status, :begining_attention_date, :ending_attention_date, :thecnician_id)
+    .includes(ticket: { client_branch: :client_manager }, retainer: { client_branch: :client_manager })
+    .includes(ticket: { client_branch: :client }, retainer: { client_branch: :client })
+  end
 
   enum status: {
     pending: 1,

@@ -7,44 +7,216 @@ RSpec.describe 'api/work_orders', type: :request do
       produces 'application/json'
       parameter name: :id, in: :path, type: :string
       response '200', 'Works listed for technician' do
-        schema type: :object,
-        properties: {
-          id: { type: :integer },
-          begining_attention_date: { type: :string, format: :date_time, description: 'Date when the technician starts the work.' },
-          ending_attention_date: { type: :string, format: :date_time, description: 'Date of ending work.' },
-          status: { type: :integer, minimum: 1, maximum: 5, description: 'The current status of the work pending: 1, doing: 2, paused: 3, done: 4, canceled: 5' },
-          thecnician_id: { type: :integer },
-          ticket: { type: :object, properties: {
-              id: { type: :integer },
-              accident_date: { type: :date, format: :datetime },
-              client_branch_id: { type: :integer },
-              details: { type: :string },
-              work_order_id: { type: :integer },
-              client_branch: { type: :object, properties: {
-                  id: { type: :integer },
-                  address: { type: :string },
-                  email: { type: :string },
-                  client: { type: :object, properties: {
-                      id: { type: :integer },
-                      name: { type: :string }
+        schema type: :array, items: {
+          type: :object,
+          properties: {
+            id: { type: :integer },
+            begining_attention_date: { type: :string, format: 'date-time', description: 'Date when the technician starts the work.' },
+            ending_attention_date: { type: :string, format: 'date-time', description: 'Date of ending work.' },
+            status: { type: :integer, minimum: 1, maximum: 5, description: 'The current status of the work pending: 1, doing: 2, paused: 3, done: 4, canceled: 5' },
+            thecnician_id: { type: :integer },
+            ticket: { type: :object, properties: {
+                id: { type: :integer },
+                accident_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                details: { type: :string },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            retainer: { type: :object, properties: {
+                id: { type: :integer },
+                service_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
                     }
                   }
                 }
               }
             }
-          },
-          retainer: { type: :object, properties: {
-              id: { type: :integer },
-              service_date: { type: :date, format: :datetime },
-              client_branch_id: { type: :integer },
-              work_order_id: { type: :integer },
-              client_branch: { type: :object, properties: {
-                  id: { type: :integer },
-                  address: { type: :string },
-                  email: { type: :string },
-                  client: { type: :object, properties: {
-                      id: { type: :integer },
-                      name: { type: :string }
+          }
+        }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/work_orders/mark_as_done/{id}' do
+    put 'Mark a work as done' do
+      tags 'work_orders'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+      response '200', 'List found' do
+        schema type: :object,
+          properties: {
+            id: { type: :integer },
+            begining_attention_date: { type: :string, format: 'date-time', description: 'Date when the technician starts the work.' },
+            ending_attention_date: { type: :string, format: 'date-time', description: 'Date of ending work.' },
+            status: { type: :integer, minimum: 1, maximum: 5, description: 'The current status of the work pending: 1, doing: 2, paused: 3, done: 4, canceled: 5' },
+            thecnician_id: { type: :integer },
+            ticket: { type: :object, properties: {
+                id: { type: :integer },
+                accident_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                details: { type: :string },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            retainer: { type: :object, properties: {
+                id: { type: :integer },
+                service_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/work_orders/list_pending' do
+    get 'List all pending works' do
+      tags 'work_orders'
+      produces 'application/json'
+      response '200', 'List found' do
+        schema type: :array, items: {
+          type: :object,
+          properties: {
+            id: { type: :integer },
+            begining_attention_date: { type: :string, format: 'date-time', description: 'Date when the technician starts the work.' },
+            ending_attention_date: { type: :string, format: 'date-time', description: 'Date of ending work.' },
+            status: { type: :integer, minimum: 1, maximum: 5, description: 'The current status of the work pending: 1, doing: 2, paused: 3, done: 4, canceled: 5' },
+            thecnician_id: { type: :integer },
+            ticket: { type: :object, properties: {
+                id: { type: :integer },
+                accident_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                details: { type: :string },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            retainer: { type: :object, properties: {
+                id: { type: :integer },
+                service_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/work_orders/list_done' do
+    get 'List all done works' do
+      tags 'work_orders'
+      produces 'application/json'
+      response '200', 'List found' do
+        schema type: :array, items: {
+          type: :object,
+          properties: {
+            id: { type: :integer },
+            begining_attention_date: { type: :string, format: 'date-time', description: 'Date when the technician starts the work.' },
+            ending_attention_date: { type: :string, format: 'date-time', description: 'Date of ending work.' },
+            status: { type: :integer, minimum: 1, maximum: 5, description: 'The current status of the work pending: 1, doing: 2, paused: 3, done: 4, canceled: 5' },
+            thecnician_id: { type: :integer },
+            ticket: { type: :object, properties: {
+                id: { type: :integer },
+                accident_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                details: { type: :string },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            retainer: { type: :object, properties: {
+                id: { type: :integer },
+                service_date: { type: :string, format: 'date-time' },
+                client_branch_id: { type: :integer },
+                work_order_id: { type: :integer },
+                client_branch: { type: :object, properties: {
+                    id: { type: :integer },
+                    address: { type: :string },
+                    email: { type: :string },
+                    client: { type: :object, properties: {
+                        id: { type: :integer },
+                        name: { type: :string }
+                      }
                     }
                   }
                 }
@@ -65,8 +237,8 @@ RSpec.describe 'api/work_orders', type: :request do
         schema type: :object,
         properties: {
           id: { type: :integer },
-          begining_attention_date: { type: :string, format: :date_time, description: 'Date when the technician starts the work.' },
-          ending_attention_date: { type: :string, format: :date_time, description: 'Date of ending work.' },
+          begining_attention_date: { type: :string, format: 'date-time', description: 'Date when the technician starts the work.' },
+          ending_attention_date: { type: :string, format: 'date-time', description: 'Date of ending work.' },
           status: { type: :integer, minimum: 1, maximum: 5, description: 'The current status of the work pending: 1, doing: 2, paused: 3, done: 4, canceled: 5' },
           thecnician_id: { type: :integer }
         }

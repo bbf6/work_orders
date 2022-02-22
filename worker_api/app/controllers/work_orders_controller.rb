@@ -1,5 +1,5 @@
 class WorkOrdersController < ApplicationController
-  before_action :set_work_order, only: %i[ show update destroy ]
+  before_action :set_work_order, only: %i[ show update destroy work_done ]
   before_action :thecnician_params, only: [:by_thecnician]
 
   # GET /work_orders
@@ -11,7 +11,27 @@ class WorkOrdersController < ApplicationController
 
   def by_thecnician
     @work_orders = WorkOrder.by_thecnician params[:thecnician_id]
-    render json: @work_orders
+    render json: @work_orders, include: [ticket_format, retainer_format]
+  end
+
+  def work_done
+    @work_order.status = 'done'
+    @work_order.ending_attention_date = DateTime.now
+    if @work_order.save
+      render json: @work_order
+    else
+      render json: @work_order.errors, status: :unprocessable_entity
+    end
+  end
+
+  def pending
+    @work_orders = WorkOrder.pending_works
+    render json: @work_orders, include: [ticket_format, retainer_format]
+  end
+
+  def done
+    @work_orders = WorkOrder.done_works
+    render json: @work_orders, include: [ticket_format, retainer_format]
   end
 
   # GET /work_orders/1
@@ -41,7 +61,8 @@ class WorkOrdersController < ApplicationController
 
   # DELETE /work_orders/1
   def destroy
-    @work_order.destroy
+    @work_order.status = 'canceled'
+    @work_order.save
   end
 
   private
@@ -57,5 +78,13 @@ class WorkOrdersController < ApplicationController
 
     def thecnician_params
       params.permit(:thecnician_id)
+    end
+
+    def ticket_format
+      { ticket: { only: [:accident_date, :details], include: { client_branch: { only: [:address, :email], include: [{ client: { only: :name } }, { client_manager: { only: [:name, :last_name, :mother_last_name] } }] } } } }
+    end
+
+    def retainer_format
+      { retainer: { only: :service_date, include: { client_branch: { only: [:address, :email], include: [{ client: { only: :name } }, { client_manager: { only: [:name, :last_name, :mother_last_name] } }] } } } }
     end
 end

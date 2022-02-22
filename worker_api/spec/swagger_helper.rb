@@ -27,12 +27,12 @@ RSpec.configure do |config|
           url: 'http://{defaultHost}',
           variables: {
             defaultHost: {
-              default: 'localhost:3000'
+              default: 'localhost:6428'
             }
           }
         },
         {
-          url: 'http://devartiral.com:3000'
+          url: 'http://devartiral.com:6428'
         }
       ]
     }

@@ -6,12 +6,36 @@ RSpec.describe 'api/clients', type: :request do
       tags 'clients'
       produces 'application/json'
       response '200', 'List found' do
-        schema type: :object,
-        properties: {
-          id: { type: :integer },
-          name: { type: :string }
+        schema type: :array, items: { type: :object,
+          properties: {
+            id: { type: :integer },
+            name: { type: :string },
+            client_branches: { type: :array, items: { type: :object, properties: {
+                  id: { type: :integer },
+                  client_id: { type: :integer },
+                  address: { type: :string },
+                  email: { type: :string },
+                  client_manager: { type: :object, properties: {
+                      id: { type: :integer },
+                      client_branch_id: { type: :integer },
+                      name: { type: :string },
+                      last_name: { type: :string },
+                      mother_last_name: { type: :string },
+                      client_manager_phones: { type: :array, items: { type: :object, properties: {
+                            id: { type: :integer },
+                            client_manager_id: { type: :integer },
+                            description: { type: :string },
+                            number: { type: :string }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
-        let(:client) { Client.all }
         run_test!
       end
     end
@@ -23,18 +47,30 @@ RSpec.describe 'api/clients', type: :request do
       parameter name: :client, in: :body, schema: {
         type: :object,
         properties: {
-          name: { type: :string }
+          name: { type: :string },
+          client_branches_attributes: { type: :array, items: { type: :object, properties: {
+                address: { type: :string },
+                email: { type: :string },
+                client_manager_attributes: { type: :object, properties: {
+                    name: { type: :string },
+                    last_name: { type: :string },
+                    mother_last_name: { type: :string },
+                    client_manager_phones_attributes: { type: :array, items: { type: :object, properties: {
+                          description: { type: :string },
+                          number: { type: :string }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         required: ['name']
       }
 
       response '201', 'client created' do
-        let(:client) { Client.create name: 'Cemsi Policlínica' }
-        run_test!
-      end
-
-      response '400', 'invalid data' do
-        let(:client) { Client.create name: nil }
         run_test!
       end
 
@@ -43,7 +79,7 @@ RSpec.describe 'api/clients', type: :request do
   end
 
   path '/api/clients/{id}' do
-    get 'find specific client' do
+    get 'Find specific client' do
       tags 'clients'
       produces 'application/json'
       parameter name: :id, in: :path, type: :string
@@ -51,16 +87,38 @@ RSpec.describe 'api/clients', type: :request do
         schema type: :object,
         properties: {
           id: { type: :integer },
-          name: { type: :string }
+          name: { type: :string },
+          client_branches: { type: :array, items: { type: :object, properties: {
+                id: { type: :integer },
+                client_id: { type: :integer },
+                address: { type: :string },
+                email: { type: :string },
+                client_manager: { type: :object, properties: {
+                    id: { type: :integer },
+                    client_branch_id: { type: :integer },
+                    name: { type: :string },
+                    last_name: { type: :string },
+                    mother_last_name: { type: :string },
+                    client_manager_phones: { type: :array, items: { type: :object, properties: {
+                          id: { type: :integer },
+                          client_manager_id: { type: :integer },
+                          description: { type: :string },
+                          number: { type: :string }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         required: [ 'id' ]
-
-        let(:id) { Client.create(name: 'Cemsi Policlínica').id }
         run_test!
       end
     end
 
-    put 'updates client data' do
+    put 'Updates client data' do
       tags 'clients'
       consumes 'application/json'
       produces 'application/json'
@@ -68,18 +126,40 @@ RSpec.describe 'api/clients', type: :request do
       parameter name: :client, in: :body, schema: {
         type: :object,
         properties: {
-          name: { type: :string }
+          name: { type: :string },
+          client_branches_attributes: { type: :array, items: { type: :object, properties: {
+                address: { type: :string },
+                email: { type: :string },
+                client_manager_attributes: { type: :object, properties: {
+                    name: { type: :string },
+                    last_name: { type: :string },
+                    mother_last_name: { type: :string },
+                    client_manager_phones_attributes: { type: :array, items: { type: :object, properties: {
+                          description: { type: :string },
+                          number: { type: :string }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         required: ['name']
       }
 
       response '200', 'client updated' do
-        let(:client) { Client.update(1, name: 'Default') }
         run_test!
       end
 
-      response '400', 'invalid data' do
-        let(:client) { Client.update(1, name: nil) }
+    end
+
+    delete 'Deletes a client' do
+      tags 'clients'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+      response '200', 'client deleted' do
         run_test!
       end
     end

@@ -15,12 +15,53 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    client_branches:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          client_id:
+                            type: integer
+                          address:
+                            type: string
+                          email:
+                            type: string
+                          client_manager:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                              client_branch_id:
+                                type: integer
+                              name:
+                                type: string
+                              last_name:
+                                type: string
+                              mother_last_name:
+                                type: string
+                              client_manager_phones:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                    client_manager_id:
+                                      type: integer
+                                    description:
+                                      type: string
+                                    number:
+                                      type: string
     post:
       summary: Creates a client
       tags:
@@ -29,8 +70,6 @@ paths:
       responses:
         '201':
           description: client created
-        '400':
-          description: invalid data
       requestBody:
         content:
           application/json:
@@ -39,11 +78,38 @@ paths:
               properties:
                 name:
                   type: string
+                client_branches_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                      email:
+                        type: string
+                      client_manager_attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          last_name:
+                            type: string
+                          mother_last_name:
+                            type: string
+                          client_manager_phones_attributes:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                description:
+                                  type: string
+                                number:
+                                  type: string
               required:
               - name
   "/api/clients/{id}":
     get:
-      summary: find specific client
+      summary: Find specific client
       tags:
       - clients
       parameters:
@@ -64,10 +130,49 @@ paths:
                     type: integer
                   name:
                     type: string
+                  client_branches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        client_id:
+                          type: integer
+                        address:
+                          type: string
+                        email:
+                          type: string
+                        client_manager:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            client_branch_id:
+                              type: integer
+                            name:
+                              type: string
+                            last_name:
+                              type: string
+                            mother_last_name:
+                              type: string
+                            client_manager_phones:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: integer
+                                  client_manager_id:
+                                    type: integer
+                                  description:
+                                    type: string
+                                  number:
+                                    type: string
                 required:
                 - id
     put:
-      summary: updates client data
+      summary: Updates client data
       tags:
       - clients
       parameters:
@@ -79,8 +184,6 @@ paths:
       responses:
         '200':
           description: client updated
-        '400':
-          description: invalid data
       requestBody:
         content:
           application/json:
@@ -89,8 +192,211 @@ paths:
               properties:
                 name:
                   type: string
+                client_branches_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      address:
+                        type: string
+                      email:
+                        type: string
+                      client_manager_attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          last_name:
+                            type: string
+                          mother_last_name:
+                            type: string
+                          client_manager_phones_attributes:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                description:
+                                  type: string
+                                number:
+                                  type: string
               required:
               - name
+    delete:
+      summary: Deletes a client
+      tags:
+      - clients
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: client deleted
+  "/api/retainers":
+    get:
+      summary: Get a list of all retainers
+      tags:
+      - retainers
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    service_date:
+                      type: string
+                      format: date-time
+                    client_branch_id:
+                      type: integer
+                    work_order_id:
+                      type: integer
+                    client_branch:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        address:
+                          type: string
+                        email:
+                          type: string
+                        client_manager_id:
+                          type: integer
+                        client_id:
+                          type: integer
+                        client:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                        client_manager:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            last_name:
+                              type: string
+                            mother_last_name:
+                              type: string
+    post:
+      summary: Creates a retainer
+      tags:
+      - retainers
+      parameters: []
+      responses:
+        '201':
+          description: retainer created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                service_date:
+                  type: string
+                  format: date-time
+                client_branch_id:
+                  type: integer
+                work_order_id:
+                  type: integer
+              required:
+              - service_date
+              - client_branch_id
+  "/api/retainers/{id}":
+    get:
+      summary: find specific retainer
+      tags:
+      - retainers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: retainer found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  service_date:
+                    type: string
+                    format: date-time
+                  client_branch_id:
+                    type: integer
+                  work_order_id:
+                    type: integer
+                  client_branch:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      address:
+                        type: string
+                      email:
+                        type: string
+                      client_manager_id:
+                        type: integer
+                      client_id:
+                        type: integer
+                      client:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                      client_manager:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          last_name:
+                            type: string
+                          mother_last_name:
+                            type: string
+    put:
+      summary: updates retainer data
+      tags:
+      - retainers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: retainer updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                service_date:
+                  type: string
+                  format: date-time
+                client_branch_id:
+                  type: integer
+                work_order_id:
+                  type: integer
+              required:
+              - service_date
+              - client_branch_id
   "/api/thecnicians":
     get:
       summary: Get a list of all thecnicians
@@ -102,32 +408,34 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  last_name:
-                    type: string
-                  mother_last_name:
-                    type: string
-                  birth_date:
-                    type: string
-                    format: date
-                  sex:
-                    type: boolean
-                  email:
-                    type: string
-                  thecnicians_phones:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        description:
-                          type: string
-                        number:
-                          type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    last_name:
+                      type: string
+                    mother_last_name:
+                      type: string
+                    birth_date:
+                      type: string
+                      format: date
+                    sex:
+                      type: boolean
+                    email:
+                      type: string
+                    thecnicians_phones:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          description:
+                            type: string
+                          number:
+                            type: string
     post:
       summary: Creates a thecnician
       tags:
@@ -136,8 +444,6 @@ paths:
       responses:
         '201':
           description: thecnician created
-        '400':
-          description: invalid data
       requestBody:
         content:
           application/json:
@@ -175,6 +481,9 @@ paths:
                         default: '0123456789'
               required:
               - name
+              - last_name
+              - birth_date
+              - sex
   "/api/thecnicians/{id}":
     get:
       summary: find specific thecnician
@@ -221,7 +530,7 @@ paths:
                 required:
                 - id
     put:
-      summary: updates thecnician data
+      summary: Updates thecnician data
       tags:
       - thecnicians
       parameters:
@@ -233,8 +542,6 @@ paths:
       responses:
         '200':
           description: thecnician updated
-        '400':
-          description: invalid data
       requestBody:
         content:
           application/json:
@@ -274,9 +581,194 @@ paths:
               - id
               - name
               - last_name
-              - mother_last_name
               - sex
               - birth_date
+    delete:
+      summary: Deletes a technician
+      tags:
+      - thecnicians
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: thecnician updated
+  "/api/tickets":
+    get:
+      summary: Get a list of all tickets
+      tags:
+      - tickets
+      responses:
+        '200':
+          description: List found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    accident_date:
+                      type: string
+                      format: date-time
+                    details:
+                      type: string
+                    client_branch_id:
+                      type: integer
+                    work_order_id:
+                      type: integer
+                    client_branch:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        address:
+                          type: string
+                        email:
+                          type: string
+                        client_manager_id:
+                          type: integer
+                        client_id:
+                          type: integer
+                        client:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                        client_manager:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            last_name:
+                              type: string
+                            mother_last_name:
+                              type: string
+    post:
+      summary: Creates a ticket
+      tags:
+      - tickets
+      parameters: []
+      responses:
+        '201':
+          description: ticket created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                accident_date:
+                  type: string
+                  format: date-time
+                details:
+                  type: string
+                client_branch_id:
+                  type: integer
+                work_order_id:
+                  type: integer
+              required:
+              - accident_date
+              - details
+              - client_branch_id
+  "/api/tickets/{id}":
+    get:
+      summary: find specific ticket
+      tags:
+      - tickets
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ticket found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  accident_date:
+                    type: string
+                    format: date-time
+                  details:
+                    type: string
+                  client_branch_id:
+                    type: integer
+                  work_order_id:
+                    type: integer
+                  client_branch:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      address:
+                        type: string
+                      email:
+                        type: string
+                      client_manager_id:
+                        type: integer
+                      client_id:
+                        type: integer
+                      client:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                      client_manager:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          last_name:
+                            type: string
+                          mother_last_name:
+                            type: string
+    put:
+      summary: updates ticket data
+      tags:
+      - tickets
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ticket updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                accident_date:
+                  type: string
+                  format: date-time
+                details:
+                  type: string
+                client_branch_id:
+                  type: integer
+                work_order_id:
+                  type: integer
+              required:
+              - accident_date
+              - details
+              - client_branch_id
   "/api/work_orders/by_thecnician/{id}":
     get:
       summary: Get all work_orders from a technician

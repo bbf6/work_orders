@@ -35,7 +35,7 @@ class ClientBranchesController < ApplicationController
 
   # DELETE /client_branches/1
   def destroy
-    @client_branch.destroy
+    @client_branch.update(status: false)
   end
 
   private
@@ -46,6 +46,6 @@ class ClientBranchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def client_branch_params
-      params.require(:client_branch).permit(:client_id, :client_manager_id, :address, :email, :status)
+      params.require(:client_branch).permit(:client_id, :client_manager_id, :address, :email, :status, client_branches_manager_attributes: [:name, :last_name, :mother_last_name, client_manager_phones_attributes: [:description, :number]])
     end
 end

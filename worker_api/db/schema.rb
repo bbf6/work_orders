@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_02_20_175759) do
+ActiveRecord::Schema[7.0].define(version: 2022_02_22_193847) do
   create_table "client_branches", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.bigint "client_manager_id", null: false

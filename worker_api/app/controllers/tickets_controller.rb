@@ -3,14 +3,14 @@ class TicketsController < ApplicationController
 
   # GET /tickets
   def index
-    @tickets = Ticket.all
-
-    render json: @tickets
+    @tickets = Ticket.includes(client_branch: :client_manager)
+    render json: @tickets, include: { client_branch: :client_manager }
   end
 
   # GET /tickets/1
   def show
-    render json: @ticket
+    @ticket = Ticket.includes(client_branch: :client_manager).where(id: params[:id])
+    render json: @ticket, include: { client_branch: :client_manager }
   end
 
   # POST /tickets

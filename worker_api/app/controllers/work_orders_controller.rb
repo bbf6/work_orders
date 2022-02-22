@@ -15,9 +15,7 @@ class WorkOrdersController < ApplicationController
   end
 
   def work_done
-    @work_order.status = 'done'
-    @work_order.ending_attention_date = DateTime.now
-    if @work_order.save
+    if @work_order.update(status: 'done', ending_attention_date: DateTime.now)
       render json: @work_order
     else
       render json: @work_order.errors, status: :unprocessable_entity
@@ -61,8 +59,7 @@ class WorkOrdersController < ApplicationController
 
   # DELETE /work_orders/1
   def destroy
-    @work_order.status = 'canceled'
-    @work_order.save
+    @work_order.update(status: 'canceled')
   end
 
   private

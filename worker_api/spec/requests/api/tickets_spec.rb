@@ -37,11 +37,9 @@ RSpec.describe 'api/tickets', type: :request do
       parameter name: :ticket, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
           accident_date: { type: :string, format: 'date-time' },
           details: { type: :string },
-          client_branch_id: { type: :integer },
-          work_order_id: { type: :integer }
+          client_branch_id: { type: :integer }
         },
         required: ['accident_date', 'details', 'client_branch_id']
       }
@@ -83,7 +81,7 @@ RSpec.describe 'api/tickets', type: :request do
       end
     end
 
-    put 'updates ticket data' do
+    put 'Updates ticket data' do
       tags 'tickets'
       consumes 'application/json'
       produces 'application/json'
@@ -94,8 +92,7 @@ RSpec.describe 'api/tickets', type: :request do
           id: { type: :integer },
           accident_date: { type: :string, format: 'date-time' },
           details: { type: :string },
-          client_branch_id: { type: :integer },
-          work_order_id: { type: :integer }
+          client_branch_id: { type: :integer }
         },
         required: ['accident_date', 'details', 'client_branch_id']
       }
@@ -103,7 +100,15 @@ RSpec.describe 'api/tickets', type: :request do
       response '200', 'ticket updated' do
         run_test!
       end
+    end
 
+    delete 'Deletes a ticket' do
+      tags 'tickets'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+      response '200', 'ticket deleted' do
+        run_test!
+      end
     end
   end
 end

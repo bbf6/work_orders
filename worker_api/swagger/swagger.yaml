@@ -299,14 +299,10 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
                 service_date:
                   type: string
                   format: date-time
                 client_branch_id:
-                  type: integer
-                work_order_id:
                   type: integer
               required:
               - service_date
@@ -397,6 +393,19 @@ paths:
               required:
               - service_date
               - client_branch_id
+    delete:
+      summary: Deletes a retainer
+      tags:
+      - retainers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: retainer deleted
   "/api/thecnicians":
     get:
       summary: Get a list of all thecnicians
@@ -663,16 +672,12 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
                 accident_date:
                   type: string
                   format: date-time
                 details:
                   type: string
                 client_branch_id:
-                  type: integer
-                work_order_id:
                   type: integer
               required:
               - accident_date
@@ -736,7 +741,7 @@ paths:
                           mother_last_name:
                             type: string
     put:
-      summary: updates ticket data
+      summary: Updates ticket data
       tags:
       - tickets
       parameters:
@@ -763,12 +768,23 @@ paths:
                   type: string
                 client_branch_id:
                   type: integer
-                work_order_id:
-                  type: integer
               required:
               - accident_date
               - details
               - client_branch_id
+    delete:
+      summary: Deletes a ticket
+      tags:
+      - tickets
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ticket deleted
   "/api/work_orders/by_thecnician/{id}":
     get:
       summary: Get all work_orders from a technician
@@ -1145,12 +1161,124 @@ paths:
                                   type: string
   "/api/work_orders":
     get:
-      summary: Get a list of all work_orders
+      summary: Get a list of all work orders
       tags:
       - work_orders
       responses:
         '200':
           description: List found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    begining_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date when the technician starts the work.
+                    ending_attention_date:
+                      type: string
+                      format: date-time
+                      description: Date of ending work.
+                    status:
+                      type: integer
+                      minimum: 1
+                      maximum: 5
+                      description: 'The current status of the work pending: 1, doing:
+                        2, paused: 3, done: 4, canceled: 5'
+                    thecnician_id:
+                      type: integer
+                    thecnician:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        last_name:
+                          type: string
+                        mother_last_name:
+                          type: string
+                        birth_date:
+                          type: string
+                          format: date
+                        sex:
+                          type: boolean
+                        email:
+                          type: string
+                        thecnicians_phones:
+                          type: object
+                          properties:
+                            description:
+                              type: string
+                            number:
+                              type: string
+                    ticket:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        accident_date:
+                          type: string
+                          format: date-time
+                        details:
+                          type: string
+                    retainer:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        service_date:
+                          type: string
+                          format: date-time
+    post:
+      summary: Creates a work order
+      tags:
+      - work_orders
+      parameters: []
+      responses:
+        '201':
+          description: work_order created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  default: 1
+                  description: 'The current status of the work pending: 1, doing:
+                    2, paused: 3, done: 4, canceled: 5'
+                thecnician_id:
+                  type: integer
+                ticket_id:
+                  type: integer
+                retainer_id:
+                  type: integer
+              required:
+              - status
+              - thecnician_id
+  "/api/work_orders/{id}":
+    get:
+      summary: Find a specific work order
+      tags:
+      - work_orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: work_order found
           content:
             application/json:
               schema:
@@ -1170,64 +1298,58 @@ paths:
                     type: integer
                     minimum: 1
                     maximum: 5
+                    default: 1
                     description: 'The current status of the work pending: 1, doing:
                       2, paused: 3, done: 4, canceled: 5'
                   thecnician_id:
                     type: integer
-    post:
-      summary: Creates a work_order
-      tags:
-      - work_orders
-      parameters: []
-      responses:
-        '201':
-          description: work_order created
-        '400':
-          description: invalid data
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: integer
-                  minimum: 1
-                  maximum: 5
-                  description: 'The current status of the work pending: 1, doing:
-                    2, paused: 3, done: 4, canceled: 5'
-                thecnician_id:
-                  type: integer
-              required:
-              - status
-              - thecnician_id
-  "/api/work_orders/{id}":
-    get:
-      summary: find specific work_order
-      tags:
-      - work_orders
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      responses:
-        '200':
-          description: work_order found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
+                  thecnician:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      last_name:
+                        type: string
+                      mother_last_name:
+                        type: string
+                      birth_date:
+                        type: string
+                        format: date
+                      sex:
+                        type: boolean
+                      email:
+                        type: string
+                      thecnicians_phones:
+                        type: object
+                        properties:
+                          description:
+                            type: string
+                          number:
+                            type: string
+                  ticket:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      accident_date:
+                        type: string
+                        format: date-time
+                      details:
+                        type: string
+                  retainer:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      service_date:
+                        type: string
+                        format: date-time
                 required:
                 - id
     put:
-      summary: updates work_order data
+      summary: Updates work order data
       tags:
       - work_orders
       parameters:
@@ -1239,18 +1361,48 @@ paths:
       responses:
         '200':
           description: work_order updated
-        '400':
-          description: invalid data
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                name:
+                begining_attention_date:
                   type: string
+                  format: date-time
+                  description: Date when the technician starts the work.
+                ending_attention_date:
+                  type: string
+                  format: date-time
+                  description: Date of ending work.
+                status:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  default: 1
+                  description: 'The current status of the work pending: 1, doing:
+                    2, paused: 3, done: 4, canceled: 5'
+                thecnician_id:
+                  type: integer
+                ticket_id:
+                  type: integer
+                retainer_id:
+                  type: integer
               required:
               - name
+    delete:
+      summary: Cancels a work order
+      tags:
+      - work_orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: work order updated
 servers:
 - url: http://{defaultHost}
   variables:

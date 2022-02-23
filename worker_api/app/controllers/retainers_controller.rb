@@ -1,22 +1,21 @@
 class RetainersController < ApplicationController
-  before_action :set_retainer, only: %i[ show update destroy ]
+  before_action :set_retainer, only: %i[ update destroy ]
 
   # GET /retainers
   def index
-    @retainers = Retainer.all
-
-    render json: @retainers
+    @retainers = Retainer.includes(client_branch: :client_manager)
+    render json: @retainers, include: :client_branch
   end
 
   # GET /retainers/1
   def show
-    render json: @retainer
+    @retainer = Retainer.includes(client_branch: :client_manager).where(id: params[:id]).first
+    render json: @retainer, include: :client_branch
   end
 
   # POST /retainers
   def create
     @retainer = Retainer.new(retainer_params)
-
     if @retainer.save
       render json: @retainer, status: :created, location: @retainer
     else
@@ -35,7 +34,7 @@ class RetainersController < ApplicationController
 
   # DELETE /retainers/1
   def destroy
-    @retainer.destroy
+    @retainer.update(status: false)
   end
 
   private
@@ -46,6 +45,6 @@ class RetainersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def retainer_params
-      params.require(:retainer).permit(:service_date, :work_order_id, :status)
+      params.require(:retainer).permit(:id, :service_date, :client_branch_id)
     end
 end

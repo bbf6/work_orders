@@ -5,7 +5,6 @@ class WorkOrdersController < ApplicationController
   # GET /work_orders
   def index
     @work_orders = WorkOrder.all
-
     render json: @work_orders
   end
 
@@ -40,7 +39,7 @@ class WorkOrdersController < ApplicationController
   # POST /work_orders
   def create
     @work_order = WorkOrder.new(work_order_params)
-
+    request_related(@work_order)
     if @work_order.save
       render json: @work_order, status: :created, location: @work_order
     else
@@ -50,6 +49,7 @@ class WorkOrdersController < ApplicationController
 
   # PATCH/PUT /work_orders/1
   def update
+    request_related(@work_order)
     if @work_order.update(work_order_params)
       render json: @work_order
     else
@@ -70,11 +70,18 @@ class WorkOrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def work_order_params
-      params.require(:work_order).permit(:thecnician_id, :begining_attention_date, :ending_attention_date, :work_status_type_id)
+      params.require(:work_order).permit(:thecnician_id, :begining_attention_date, :ending_attention_date, :work_status_type_id, :status)
     end
 
     def thecnician_params
       params.permit(:thecnician_id)
+    end
+
+    def request_related(work_order)
+      ticket = Ticket.where(id: params[:ticket_id]).first
+      retainer = Retainer.where(id: params[:retainer_id]).first
+      work_order.ticket = ticket if ticket && !retainer
+      work_order.retainer = retainer if !ticket && retainer
     end
 
     def ticket_format

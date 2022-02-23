@@ -1,5 +1,5 @@
 class ThecniciansController < ApplicationController
-  before_action :set_thecnician, only: %i[ show update destroy ]
+  before_action :set_thecnician, only: %i[ update destroy ]
 
   # GET /thecnicians
   def index
@@ -9,6 +9,7 @@ class ThecniciansController < ApplicationController
 
   # GET /thecnicians/1
   def show
+    @thecnician = Thecnician.where(id: params[:id]).first
     render json: @thecnician, include: :thecnician_phones
   end
 

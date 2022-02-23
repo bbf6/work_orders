@@ -1,22 +1,21 @@
 class TicketsController < ApplicationController
-  before_action :set_ticket, only: %i[ show update destroy ]
+  before_action :set_ticket, only: %i[ update destroy ]
 
   # GET /tickets
   def index
     @tickets = Ticket.includes(client_branch: :client_manager)
-    render json: @tickets, include: { client_branch: :client_manager }
+    render json: @tickets, include: :client_branch
   end
 
   # GET /tickets/1
   def show
-    @ticket = Ticket.includes(client_branch: :client_manager).where(id: params[:id])
-    render json: @ticket, include: { client_branch: :client_manager }
+    @ticket = Ticket.includes(client_branch: :client_manager).where(id: params[:id]).first
+    render json: @ticket, include: :client_branch
   end
 
   # POST /tickets
   def create
     @ticket = Ticket.new(ticket_params)
-
     if @ticket.save
       render json: @ticket, status: :created, location: @ticket
     else
@@ -35,7 +34,7 @@ class TicketsController < ApplicationController
 
   # DELETE /tickets/1
   def destroy
-    @ticket.destroy
+    @ticket.update(status: false)
   end
 
   private
@@ -46,6 +45,6 @@ class TicketsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def ticket_params
-      params.require(:ticket).permit(:accident_date, :details, :work_order_id, :status)
+      params.require(:ticket).permit(:id, :accident_date, :details, :client_branch_id)
     end
 end

@@ -36,10 +36,8 @@ RSpec.describe 'api/retainers', type: :request do
       parameter name: :retainer, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
           service_date: { type: :string, format: 'date-time' },
-          client_branch_id: { type: :integer },
-          work_order_id: { type: :integer }
+          client_branch_id: { type: :integer }
         },
         required: ['service_date', 'client_branch_id']
       }
@@ -88,18 +86,23 @@ RSpec.describe 'api/retainers', type: :request do
       parameter name: :retainer, in: :body, schema: {
         type: :object,
         properties: {
-          id: { type: :integer },
           service_date: { type: :string, format: 'date-time' },
-          client_branch_id: { type: :integer },
-          work_order_id: { type: :integer }
+          client_branch_id: { type: :integer }
         },
         required: ['service_date', 'client_branch_id']
       }
-
       response '200', 'retainer updated' do
         run_test!
       end
+    end
 
+    delete 'Deletes a retainer' do
+      tags 'retainers'
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :string
+      response '200', 'retainer deleted' do
+        run_test!
+      end
     end
   end
 end

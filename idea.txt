@@ -1,0 +1,16 @@
+I could not find the time to implement a user like authorization subsystem
+neither a benchmarking tool. Besides that, you can find the base idea
+implementation of the requirements on ./docs/domain.pdf
+
+The work flows goes like this; every retainer and ticked must be requested by
+a client who must specifies to which of their potential branches must be
+attended. Every branch must have a manager with contact data available for an
+ease communication.
+
+Now, having an retainer or a ticket is not enough to be attended by a
+technician, you must first create a work order entity related to the retainer
+or ticket and a specific technician. You can have a tracking of the current
+state of the work order with the property 'status' (which values can be
+pending: 1, doing: 2, paused: 3, done: 4, canceled: 5) and you can measure the
+time of attention with the properties 'begining_attention_date' and
+'ending_attention_date'.

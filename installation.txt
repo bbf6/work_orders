@@ -1,0 +1,25 @@
+The next instructions are meant to run the ruby on rails project ./worker_api/
+as a development in a Debian/Ubuntu OS with a MySQL database:
+
+Updates the system:
+  sudo apt update
+
+Install rvm with:
+  gpg --keyserver  hkp://keyserver.ubuntu.com/ --recv-keys 409B6B 1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+  \curl -sSL https://get.rvm.io | bash -s stable --rails
+
+Download the gems with:
+  cd ./worker_api
+  bundle install
+
+You will need edit the ./worker_api/config/database.yml username and password or
+you can create that user in the database server.
+
+Now prepare the database configuration and data with this command:
+  rails db:create db:migrate db:seed
+
+Finally, you can run the project with:
+  rails s -b 0.0.0.0 -p 6428
+
+A full working implementation of this project is running in
+http://devartiral.com:6428/
